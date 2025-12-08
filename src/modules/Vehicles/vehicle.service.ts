@@ -5,7 +5,6 @@ import { pool } from "../../config/db";
 
 
 const createVehicleService=async(payload: Record<string,unknown>)=>{
-console.log( 'from payload ',payload);
 
 const {vehicle_name,type,registration_number,daily_rent_price,availability_status}= payload
 
@@ -55,10 +54,19 @@ const updateSingleVehicleService=async(vehicle_name:string,type:string,registrat
 }
 
 const deleteSingleVehicleService=async(vehicleId: string)=>{
+             
 
-    const result= await pool.query(`DELETE  FROM vehicles WHERE id=$1 `,[vehicleId])
-
- return result
+    const result= await pool.query(`
+        
+        DELETE  FROM vehicles
+         WHERE id=$1
+        AND availability_status = 'available'
+        RETURNING *
+        `,[vehicleId])
+   if (result.rowCount === 0) {
+    throw new Error('Vehicle cannot be deleted because it has active bookings.');
+}
+return result
 
 }
 export const vehicleServices={

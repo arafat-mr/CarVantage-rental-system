@@ -15,7 +15,7 @@ const signupUser = async (req: Request, res: Response) => {
       data: user,
     });
 
-    console.log(result);
+    
   } catch (error: any) {
     res.status(500).json({
       success: false,

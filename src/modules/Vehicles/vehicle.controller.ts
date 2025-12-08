@@ -6,8 +6,8 @@ const {createVehicleService,getVehiclesServices,getSingleVehicleService,updateSi
 const createVehicle=async(req:Request,res:Response)=>{
 
 
-try {
-console.log(req.body);
+try { 
+
 
 const result =  await  createVehicleService(req.body)
 
@@ -60,12 +60,12 @@ const getVehicles=async(req:Request,res:Response)=>{
 
 const getSingleVehicle=async(req:Request,res:Response)=>{
 
-    console.log(req.params.vehicleId);
+   
     
 try {
     const result = await getSingleVehicleService(req.params.vehicleId!);
     
-     console.log(result);
+     
      
     if (result.rows.length === 0) {
       res.status(404).json({
@@ -126,8 +126,7 @@ const deleteSingle=async(req:Request,res:Response)=>{
 
   try {
     const result = await deleteSingleVehicleService(req.params.vehicleId!);
-    // console.log(result.rows);
-    // console.log(result.rowCount);
+  
     if (result.rowCount == 0) {
       res.status(404).json({
         success: false,
@@ -144,7 +143,7 @@ const deleteSingle=async(req:Request,res:Response)=>{
     res.status(500).json({
       success: false,
       message: 'Failed to delete vehicle',
-      errors:error.messae
+      errors:error.message
     });
   }
 

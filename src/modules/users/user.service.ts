@@ -17,7 +17,7 @@ const getUsersService=async()=>{
       return result
      }
 
-
+ 
      const updateUserService=async(name:string,email:string,phone:string,role:string,userId:string)=>{
         const result =await pool.query(`
             
@@ -40,7 +40,19 @@ const getUsersService=async()=>{
 
      const deleteUserService=async(userId:string)=>{
 
- const result= await pool.query(`DELETE  FROM users WHERE id=$1 `,[userId])
+      const checkBooking=await pool.query(`
+        
+        SELECT * FROM bookings WHERE customer_id=$1
+        `,[userId])
+      if (checkBooking.rowCount! > 0) {
+  throw new Error('User cannot be deleted because they have active bookings');
+}
+ const result= await pool.query(`
+  
+  
+  DELETE  FROM users WHERE id=$1 
+  
+  `,[userId])
 
  return result
      }

@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { usersServices } from "./user.service";
 
 
+
 const {getUsersService,updateUserService,singleUserService,deleteUserService}=usersServices
 const getUsers=async(req:Request,res:Response)=>{
 
@@ -68,12 +69,37 @@ const getSingleUser=async(req:Request,res:Response)=>{
 const updateUser=async(req:Request,res:Response)=>{
 
 
-    const { name, email,phone,role} = req.body;
-    const userId=req.params.userId
+   
   try {
-    const result = await updateUserService(name,email,phone,role,userId!);
+ const { name, email,phone,role} = req.body;
+    const userId=req.params.userId!.toString()
+   
+    
+     const loggedInUser = req.user;
+    
+     
+     const loggedinUserId= loggedInUser!.id.toString()
+     
+     
+    
+    if (loggedInUser!.role !== 'admin' && loggedinUserId !== userId) {
+      return res.status(403).json({
+        success: false,
+        message: 'You are not allowed to update this user'
+      });
+    }
+    const result = await updateUserService(
+      
+      
+      
+     name,
+      email,
+      phone,
+      loggedInUser!.role === 'admin' ? role : null, 
+      userId!
+    );
 
-    console.log(result.rows);
+    
 
     if (result.rows.length === 0) {
       res.status(404).json({

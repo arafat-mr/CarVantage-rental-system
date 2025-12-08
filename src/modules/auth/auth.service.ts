@@ -19,7 +19,7 @@ const createSignUpService= async(payload: Record<string,unknown>)=>{
 
 const loginUserService=async(email:string,password:string)=>{
 const result= await pool.query(`SELECT * FROM users WHERE email=$1`,[email])
-console.log(result);
+
 
 if(result.rows.length === 0){
     return null
@@ -29,16 +29,16 @@ const user= result.rows[0]
 
 const matchedUser= await bcrypt.compare(password,user.password)
  
-console.log(matchedUser,user);
+
 
 if(!matchedUser){
     return false
 }
 const secret= config.jwt_secret
-const token = jwt.sign({name:user.name,email:user.email,role:user.role},secret as string,{
+const token = jwt.sign({name:user.name,email:user.email,role:user.role,id:user.id},secret as string,{
     expiresIn:'7d'
 })
-console.log({token});
+
 
  delete user.password
 return {token,user}
